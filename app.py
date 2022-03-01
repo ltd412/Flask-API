@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from pymongo import MongoClient
 from bson import json_util, ObjectId
 
@@ -30,7 +30,7 @@ def list_devices():
         else:
             return "Enter full information"
     else:
-        return json_util.dumps(mydb.list_phone.find())
+        return Response(json_util.dumps(mydb.list_phone.find()), mimetype="application/json")
 
 
 @app.route("/phone/<id>", methods=["GET", "PUT", "DELETE"])
@@ -38,7 +38,7 @@ def device_information(id):
     if request.method == "GET":
         device = mydb.list_phone.find_one({"_id": ObjectId(id)})
         response = json_util.dumps(device)
-        return response
+        return Response(response, mimetype="application/json")
     elif request.method == "PUT":
         phonename = request.json["phonename"]
         branch = request.json["branch"]
